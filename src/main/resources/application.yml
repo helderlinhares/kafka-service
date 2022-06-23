@@ -1,0 +1,15 @@
+server:
+  port: 9102
+
+
+kafka:
+  bootstrapServers: localhost:9092
+  acksConfig: all
+  retriesConfig: 10
+  schemaRegistryUrl: "http://localhost:8081"
+  groupId: my-consumer
+  autoCommit: false
+  offsetReset: earliest
+  specificAvroReader: true
+  topic:
+    message: me.hl.message

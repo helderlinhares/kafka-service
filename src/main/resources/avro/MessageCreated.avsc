@@ -1,0 +1,31 @@
+{
+  "type": "record",
+  "name": "MessageCreatedEvent",
+  "namespace": "me.hl.message",
+  "version": "1.0",
+  "fields": [
+    {
+      "name": "code",
+      "type": "string",
+      "doc": "Message code"
+    },
+    {
+      "name": "content",
+      "type": [
+        "null",
+        "me.hl.message.MessageContent"
+      ],
+      "default": null,
+      "doc": "Message content"
+    },
+    {
+      "name": "created_at",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Message creation date"
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "type": "record",
+  "name": "MessageContent",
+  "namespace": "me.hl.message",
+  "version": "1.0",
+  "fields": [
+    {
+      "name": "title",
+      "type": [
+        "null",
+        "string"
+      ],
+      "doc": "Message Title"
+    },
+    {
+      "name": "body",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Message Body"
+    }
+  ]
+}
