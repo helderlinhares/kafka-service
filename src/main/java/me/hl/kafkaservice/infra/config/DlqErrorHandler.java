@@ -14,6 +14,7 @@ import java.util.List;
 
 //https://docs.spring.io/spring-kafka/docs/current/reference/html/#error-handling-deserializer
 //https://stackoverflow.com/questions/70252047/this-error-handler-cannot-process-serializationexceptions-directly-please-con
+/*
 @Component
 public class DlqErrorHandler implements ContainerAwareErrorHandler {
     private final KafkaTemplate<String, MessageCreatedEvent> kafkaTemplate;
@@ -40,3 +41,4 @@ public class DlqErrorHandler implements ContainerAwareErrorHandler {
 
     }
 }
+*/
