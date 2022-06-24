@@ -1,15 +1,26 @@
 server:
   port: 9102
 
-
-kafka:
-  bootstrapServers: localhost:9092
-  acksConfig: all
-  retriesConfig: 10
-  schemaRegistryUrl: "http://localhost:8081"
-  groupId: my-consumer
-  autoCommit: false
-  offsetReset: earliest
-  specificAvroReader: true
-  topic:
-    message: me.hl.message
+spring:
+  application:
+    name: kafka-service
+    version: 1.0
+  kafka:
+    bootstrap-servers: localhost:9092
+    template:
+      default-topic: me.hl.message
+    producer:
+      acks: all
+      retries: 10
+    consumer:
+      enable-auto-commit: false
+      group-id: ${spring.application.name}
+      auto-offset-reset: earliest
+    custom-properties:
+      producer:
+        schema-registry-url: http://localhost:8081
+      consumer:
+        schema-registry-url: http://localhost:8081
+        specific-avro-reader: true
+    dlt:
+      enable: true
