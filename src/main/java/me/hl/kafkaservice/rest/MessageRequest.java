@@ -1,5 +1,6 @@
 package me.hl.kafkaservice.rest;
 
-public record MessageRequest(String code, ContentRequest content) {}
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 
-
+public record MessageRequest(@NotBlank String code, @Valid ContentRequest content) {}
