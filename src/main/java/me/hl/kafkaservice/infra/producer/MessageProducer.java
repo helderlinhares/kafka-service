@@ -1,20 +1,19 @@
 package me.hl.kafkaservice.infra.producer;
 
 import lombok.extern.slf4j.Slf4j;
-import me.hl.kafkaservice.infra.config.producer.MessageProducerConfig;
 import me.hl.kafkaservice.rest.MessageRequest;
 import me.hl.message.MessageContent;
 import me.hl.message.MessageCreatedEvent;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 
 import static me.hl.kafkaservice.infra.config.producer.MessageProducerConfig.PRODUCER_MESSAGE_TEMPLATE_BEAN_NAME;
 
-@Component
+@Service
 @Slf4j
 public class MessageProducer extends AbstractProducer<String, MessageCreatedEvent>{
 

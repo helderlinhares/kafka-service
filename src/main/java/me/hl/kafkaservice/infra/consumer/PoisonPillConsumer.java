@@ -9,8 +9,8 @@ import org.springframework.stereotype.Service;
 
 import static me.hl.kafkaservice.infra.config.consumer.MessageDltConsumerConfig.CONSUMER_OBJECT_BEAN_NAME;
 
-@Slf4j
 @Service
+@Slf4j
 @ConditionalOnExpression("${spring.kafka.dlt.enable}")
 public class PoisonPillConsumer {
 

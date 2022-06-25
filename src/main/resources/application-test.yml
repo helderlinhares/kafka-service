@@ -1,0 +1,10 @@
+spring:
+  kafka:
+    template:
+      default-topic: embedded.topic.test
+    bootstrap-servers: ${spring.embedded.kafka.brokers}
+    custom-properties:
+      producer:
+        schema-registry-url: mock://schema-registry
+      consumer:
+        schema-registry-url: mock://schema-registry

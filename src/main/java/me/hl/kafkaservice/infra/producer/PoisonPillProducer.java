@@ -1,6 +1,5 @@
 package me.hl.kafkaservice.infra.producer;
 
-import me.hl.kafkaservice.rest.MessageRequest;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
