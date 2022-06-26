@@ -1,26 +1,30 @@
-package me.hl.kafkaservice.infra.producer;
+package me.hl.kafkaservice.infra;
 
-import me.hl.kafkaservice.profiles.Profiles;
+import me.hl.kafkaservice.infra.utils.EmbeddedConsumerUtils;
 import me.hl.kafkaservice.rest.ContentRequest;
 import me.hl.kafkaservice.rest.MessageRequest;
 import me.hl.message.MessageCreatedEvent;
 import org.apache.kafka.clients.consumer.Consumer;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.test.EmbeddedKafkaBroker;
+import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.kafka.test.utils.KafkaTestUtils;
-import org.springframework.test.context.ActiveProfiles;
+import me.hl.kafkaservice.infra.producer.MessageProducer;
 
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-
-@ActiveProfiles(Profiles.TEST)
-class MessageProducerTest extends ProducerTestUtils<String, MessageCreatedEvent>{
+@EmbeddedKafka(
+        topics = {"${spring.kafka.template.default-topic}"},
+        partitions = 1
+)
+class MessageProducerTest extends EmbeddedConsumerUtils<String, MessageCreatedEvent> {
 
     private static final int TIMEOUT_IN_MILLISECONDS = 5000;
 
@@ -38,6 +42,11 @@ class MessageProducerTest extends ProducerTestUtils<String, MessageCreatedEvent>
     @BeforeAll
     private void setupKafka() {
         consumer = getConsumer(embeddedKafkaBroker, topic);
+    }
+
+    @AfterAll
+    private void tearDown(){
+        consumer.close();
     }
 
     @Test
