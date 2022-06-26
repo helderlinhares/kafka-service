@@ -1,9 +1,11 @@
 package me.hl.kafkaservice.infra;
 
 import me.hl.kafkaservice.infra.consumer.MessageConsumer;
+import me.hl.kafkaservice.infra.consumer.PoisonPillConsumer;
 import me.hl.kafkaservice.infra.utils.EmbeddedProducerUtils;
 import me.hl.message.MessageContent;
 import me.hl.message.MessageCreatedEvent;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.junit.jupiter.api.AfterAll;
@@ -37,11 +39,16 @@ class MessageConsumerTest extends EmbeddedProducerUtils<String, MessageCreatedEv
 
     private Producer<String, MessageCreatedEvent> producer;
 
+    private Producer<Object, Object> poisonPillProducer;
+
     @Autowired
     private EmbeddedKafkaBroker embeddedKafkaBroker;
 
     @SpyBean
     private MessageConsumer messageConsumer;
+
+    @SpyBean
+    private PoisonPillConsumer dltConsumer;
 
     @Captor
     ArgumentCaptor<MessageCreatedEvent> messageArgumentCaptor;
@@ -55,14 +62,19 @@ class MessageConsumerTest extends EmbeddedProducerUtils<String, MessageCreatedEv
     @Captor
     ArgumentCaptor<Long> offsetArgumentCaptor;
 
+    @Captor
+    ArgumentCaptor<ConsumerRecord<String, byte[]>> consumerRecordCaptor;
+
     @BeforeAll
     private void setupKafka() {
-        producer = getProducer(embeddedKafkaBroker, topic);
+        producer = getProducer(embeddedKafkaBroker);
+        poisonPillProducer = getPoisonPillProducer(embeddedKafkaBroker);
     }
 
     @AfterAll
     private void tearDown(){
         producer.close();
+        poisonPillProducer.close();
     }
 
     @Test
@@ -84,6 +96,24 @@ class MessageConsumerTest extends EmbeddedProducerUtils<String, MessageCreatedEv
         assertEquals(topic, topicArgumentCaptor.getValue());
         assertEquals(0, partitionArgumentCaptor.getValue());
         assertEquals(0, offsetArgumentCaptor.getValue());
+    }
+
+    @Test
+    void shouldSendMessageToDltWhenConsumePoisonPill(){
+        var message = UUID.randomUUID().toString();
+        poisonPillProducer.send(new ProducerRecord<>(topic, 0, "", message));
+        poisonPillProducer.flush();
+
+        Mockito.verify(dltConsumer, Mockito.timeout(TIMEOUT_IN_MILLISECONDS))
+                .recoverDLT(consumerRecordCaptor.capture());
+
+        var dltConsumedRecord = consumerRecordCaptor.getValue();
+
+        assertEquals(new String(dltConsumedRecord.value()), message);
+        assertEquals("%s.DLT".formatted(topic), dltConsumedRecord.topic());
+        assertEquals(0, dltConsumedRecord.partition());
+        assertEquals(0, dltConsumedRecord.offset());
+
     }
 
     private MessageCreatedEvent buildMessage(){

@@ -4,6 +4,7 @@ import io.confluent.kafka.serializers.KafkaAvroSerializer;
 import io.confluent.kafka.serializers.KafkaAvroSerializerConfig;
 import me.hl.kafkaservice.profiles.Profiles;
 import org.apache.kafka.clients.producer.Producer;
+import org.apache.kafka.common.serialization.StringSerializer;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -26,7 +27,7 @@ public class EmbeddedProducerUtils<T, K> {
     @Value("${spring.kafka.custom-properties.producer.schema-registry-url}")
     private String schemaRegistryUrl;
 
-    public Producer<T, K> getProducer(EmbeddedKafkaBroker embeddedKafka, String topic) {
+    public Producer<T, K> getProducer(EmbeddedKafkaBroker embeddedKafka) {
 
         var configProps = KafkaTestUtils.consumerProps(
                 String.format("kafka-tests-%s", UUID.randomUUID()), "false", embeddedKafka);
@@ -36,6 +37,20 @@ public class EmbeddedProducerUtils<T, K> {
         configProps.put(KafkaAvroSerializerConfig.SCHEMA_REGISTRY_URL_CONFIG, schemaRegistryUrl);
 
         var factory = new DefaultKafkaProducerFactory<T, K>(configProps);
+
+        return factory.createProducer();
+    }
+
+    public Producer<Object, Object> getPoisonPillProducer(EmbeddedKafkaBroker embeddedKafka) {
+
+        var configProps = KafkaTestUtils.consumerProps(
+                String.format("kafka-tests-%s", UUID.randomUUID()), "false", embeddedKafka);
+        configProps.put(BOOTSTRAP_SERVERS_CONFIG, embeddedKafka.getBrokersAsString());
+        configProps.put(KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+        configProps.put(VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+        configProps.put(KafkaAvroSerializerConfig.SCHEMA_REGISTRY_URL_CONFIG, schemaRegistryUrl);
+
+        var factory = new DefaultKafkaProducerFactory<>(configProps);
 
         return factory.createProducer();
     }
