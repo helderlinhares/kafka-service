@@ -4,4 +4,4 @@ pluginManagement {
         mavenCentral()
     }
 }
-rootProject.name = 'full-kafka-service'
+rootProject.name = 'kafka-service'
