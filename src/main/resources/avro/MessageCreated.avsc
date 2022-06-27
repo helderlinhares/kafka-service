@@ -5,9 +5,9 @@
   "version": "1.0",
   "fields": [
     {
-      "name": "code",
+      "name": "sender_name",
       "type": "string",
-      "doc": "Message code"
+      "doc": "Sender name"
     },
     {
       "name": "content",

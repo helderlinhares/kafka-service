@@ -15,10 +15,11 @@ public class MessageConsumer {
     @KafkaListener(topics = "${spring.kafka.template.default-topic}",
             containerFactory = MessageConsumerConfig.CONSUMER_MESSAGE_CREATED_BEAN_NAME)
     public void listenMessageCreated(@Payload MessageCreatedEvent message,
+                                     @Header(KafkaHeaders.RECEIVED_MESSAGE_KEY) String key,
                                      @Header(KafkaHeaders.RECEIVED_TOPIC) String topic,
                                      @Header(KafkaHeaders.RECEIVED_PARTITION_ID) Integer partition,
                                      @Header(KafkaHeaders.OFFSET) Long offset) {
-        log.info("Received a message with code: '{}', from topic: '{}', partition: '{}', and offset: '{}'",
-                message.getCode(), topic, partition, offset);
+        log.info("Received a message with key: '{}', title: '{}', from topic: '{}', partition: '{}', and offset: '{}'",
+                key, message.getContent().getTitle(), topic, partition, offset);
     }
 }

@@ -12,21 +12,34 @@ abstract public class AbstractProducer<T, K> {
 
     abstract public String getTopic();
 
+    abstract public T getKey();
+
     abstract public K getEvent();
 
-    public void send(KafkaTemplate<T, K> kafkaTemplate){
+    abstract public KafkaTemplate<T, K> getKafkaTemplate();
+
+    public void send() {
         ListenableFuture<SendResult<T, K>> future =
-                kafkaTemplate.send(getTopic(), getEvent());
+                getKafkaTemplate().send(getTopic(), getKey(), getEvent());
 
         future.addCallback(new ListenableFutureCallback<>() {
             @Override
             public void onSuccess(SendResult<T, K> result) {
-                log.info("Sent message=[" + getEvent() + "] with offset=[" + result.getRecordMetadata().offset() + "]");
+                log.info("Sent message with key: '%s', value: '%s', from topic: '%s', partition '%s', and offset='%s'"
+                        .formatted(getKey(),
+                                getEvent(),
+                                getTopic(),
+                                result.getRecordMetadata().offset(),
+                                result.getRecordMetadata().partition()));
             }
 
             @Override
             public void onFailure(@NonNull Throwable ex) {
-                log.error("Unable to send message=[" + getEvent() + "] due to : " + ex.getMessage());
+                log.error("Unable to send message with key: '%s', value: '%s', from topic: '%s' due to exception: '%s'"
+                        .formatted(getKey(),
+                                getEvent(),
+                                getTopic(),
+                                ex.getMessage()));
             }
         });
     }

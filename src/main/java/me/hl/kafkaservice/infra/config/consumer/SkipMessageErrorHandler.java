@@ -7,6 +7,7 @@ import org.apache.kafka.common.TopicPartition;
 import org.springframework.kafka.listener.CommonErrorHandler;
 import org.springframework.kafka.listener.MessageListenerContainer;
 import org.springframework.lang.NonNull;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -24,6 +25,7 @@ public class SkipMessageErrorHandler implements CommonErrorHandler {
     }
 
     @Override
+    @Transactional
     public void handleRecord(Exception thrownException,
                              ConsumerRecord<?, ?> record,
                              Consumer<?, ?> consumer,

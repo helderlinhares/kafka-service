@@ -51,25 +51,25 @@ class MessageProducerTest extends EmbeddedConsumerUtils<String, MessageCreatedEv
 
     @Test
     void shouldProduceMessage(){
-        var message = buildMessageRequest();
-        messageProducer.send(message);
+        var key = UUID.randomUUID().toString();
+        var message = buildMessageRequest(key);
+        messageProducer.send(key, message);
 
         var event = KafkaTestUtils.getSingleRecord(consumer, topic, TIMEOUT_IN_MILLISECONDS);
 
         assertNotNull(event);
-        assertEquals(event.value().getCode(), message.code());
+        assertEquals(event.value().getSenderName(), message.senderName());
         assertEquals(event.value().getContent().getTitle(), message.content().title());
         assertEquals(event.value().getContent().getBody(), message.content().body());
     }
 
-    private MessageRequest buildMessageRequest(){
-        var messageCode = UUID.randomUUID().toString();
+    private MessageRequest buildMessageRequest(String code){
 
         return new MessageRequest(
-                messageCode,
+                "Name %s".formatted(code),
                 new ContentRequest(
-                        String.format("Title %s", messageCode),
-                        String.format("Body %s", messageCode)
+                        "Title %s".formatted(code),
+                        "Body %s".formatted(code)
                 )
         );
     }

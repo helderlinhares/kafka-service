@@ -54,6 +54,9 @@ class MessageConsumerTest extends EmbeddedProducerUtils<String, MessageCreatedEv
     ArgumentCaptor<MessageCreatedEvent> messageArgumentCaptor;
 
     @Captor
+    ArgumentCaptor<String> keyArgumentCaptor;
+
+    @Captor
     ArgumentCaptor<String> topicArgumentCaptor;
 
     @Captor
@@ -63,7 +66,7 @@ class MessageConsumerTest extends EmbeddedProducerUtils<String, MessageCreatedEv
     ArgumentCaptor<Long> offsetArgumentCaptor;
 
     @Captor
-    ArgumentCaptor<ConsumerRecord<String, byte[]>> consumerRecordCaptor;
+    ArgumentCaptor<ConsumerRecord<byte[], byte[]>> consumerRecordCaptor;
 
     @BeforeAll
     private void setupKafka() {
@@ -80,17 +83,21 @@ class MessageConsumerTest extends EmbeddedProducerUtils<String, MessageCreatedEv
     @Test
     void shouldConsumeMessage() {
         var message = buildMessage();
-        producer.send(new ProducerRecord<>(topic, 0, "", message));
+        var key = UUID.randomUUID().toString();
+        producer.send(new ProducerRecord<>(topic, 0, key, message));
         producer.flush();
 
         Mockito.verify(messageConsumer, Mockito.timeout(TIMEOUT_IN_MILLISECONDS))
-                .listenMessageCreated(messageArgumentCaptor.capture(), topicArgumentCaptor.capture(),
-                partitionArgumentCaptor.capture(), offsetArgumentCaptor.capture());
+                .listenMessageCreated(
+                        messageArgumentCaptor.capture(), keyArgumentCaptor.capture(),
+                        topicArgumentCaptor.capture(), partitionArgumentCaptor.capture(),
+                        offsetArgumentCaptor.capture());
 
         MessageCreatedEvent messageConsumed = messageArgumentCaptor.getValue();
 
         assertNotNull(messageConsumed);
-        assertEquals(messageConsumed.getCode(), message.getCode());
+        assertEquals(keyArgumentCaptor.getValue(), key);
+        assertEquals(messageConsumed.getSenderName(), message.getSenderName());
         assertEquals(messageConsumed.getContent().getTitle(), message.getContent().getTitle());
         assertEquals(messageConsumed.getContent().getBody(), message.getContent().getBody());
         assertEquals(topic, topicArgumentCaptor.getValue());
@@ -100,8 +107,9 @@ class MessageConsumerTest extends EmbeddedProducerUtils<String, MessageCreatedEv
 
     @Test
     void shouldSendMessageToDltWhenConsumePoisonPill(){
+        var key = UUID.randomUUID().toString();
         var message = UUID.randomUUID().toString();
-        poisonPillProducer.send(new ProducerRecord<>(topic, 0, "", message));
+        poisonPillProducer.send(new ProducerRecord<>(topic, 0, key, message));
         poisonPillProducer.flush();
 
         Mockito.verify(dltConsumer, Mockito.timeout(TIMEOUT_IN_MILLISECONDS))
@@ -109,6 +117,7 @@ class MessageConsumerTest extends EmbeddedProducerUtils<String, MessageCreatedEv
 
         var dltConsumedRecord = consumerRecordCaptor.getValue();
 
+        assertEquals(new String(dltConsumedRecord.key()), key);
         assertEquals(new String(dltConsumedRecord.value()), message);
         assertEquals("%s.DLT".formatted(topic), dltConsumedRecord.topic());
         assertEquals(0, dltConsumedRecord.partition());
@@ -120,10 +129,10 @@ class MessageConsumerTest extends EmbeddedProducerUtils<String, MessageCreatedEv
         var messageCode = UUID.randomUUID().toString();
 
         return new MessageCreatedEvent(
-                messageCode,
+                "Name %s".formatted(messageCode),
                 new MessageContent(
-                        String.format("Title %s", messageCode),
-                        String.format("Body %s", messageCode)
+                        "Title %s".formatted(messageCode),
+                        "Body %s".formatted(messageCode)
                 ),
                 LocalDateTime.now().toString()
         );

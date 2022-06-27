@@ -17,8 +17,8 @@ public record KafkaController(
 
     @PostMapping("publish")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    private void sendMessageToKafkaTopic(@Valid @RequestBody MessageRequest messageRequest){
-        messageProducer.send(messageRequest);
+    private void sendMessageToKafkaTopic(@Valid @RequestBody Request request){
+        messageProducer.send(request.key(), request.message());
     }
 
     @PostMapping(value = "poison", consumes = {MediaType.ALL_VALUE})

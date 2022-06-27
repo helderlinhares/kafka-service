@@ -20,6 +20,8 @@ public class MessageProducer extends AbstractProducer<String, MessageCreatedEven
     @Value("${spring.kafka.template.default-topic}")
     private String topic;
 
+    private String key;
+
     private MessageRequest message;
 
     private final KafkaTemplate<String, MessageCreatedEvent> kafkaTemplate;
@@ -34,9 +36,14 @@ public class MessageProducer extends AbstractProducer<String, MessageCreatedEven
     }
 
     @Override
+    public String getKey() {
+        return key;
+    }
+
+    @Override
     public MessageCreatedEvent getEvent() {
         return MessageCreatedEvent.newBuilder()
-                .setCode(message.code())
+                .setSenderName(message.senderName())
                 .setContent(
                         MessageContent.newBuilder()
                                 .setTitle(message.content().title())
@@ -47,8 +54,14 @@ public class MessageProducer extends AbstractProducer<String, MessageCreatedEven
                 .build();
     }
 
-    public void send(MessageRequest message){
+    @Override
+    public KafkaTemplate<String, MessageCreatedEvent> getKafkaTemplate() {
+        return kafkaTemplate;
+    }
+
+    public void send(String key, MessageRequest message){
+        this.key = key;
         this.message = message;
-        super.send(kafkaTemplate);
+        super.send();
     }
 }
