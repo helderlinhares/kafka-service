@@ -96,17 +96,17 @@ This Rest client will use kafka to produce a message on topic: `me.hl.message`
 Curl example:
 ```console
     curl --request POST \
-  --url http://localhost:9102/api/v1/kafka/publish \
-  --header 'Content-Type: application/json' \
-  --data '{
-	"key": "fb9240b9-24e8-4be9-bcd8-32363c631f0c",
-	"message": {
-		"senderName": "Name fb9240b9-24e8-4be9-bcd8-32363c631f0c",
-		"content": {
-			"title": "Title Message fb9240b9-24e8-4be9-bcd8-32363c631f0c",
-			"body": "Body Message fb9240b9-24e8-4be9-bcd8-32363c631f0c"
-		}
-	}
+      --url http://localhost:9102/api/v1/kafka/publish \
+      --header 'Content-Type: application/json' \
+      --data '{
+        "key": "fb9240b9-24e8-4be9-bcd8-32363c631f0c",
+        "message": {
+            "senderName": "Name fb9240b9-24e8-4be9-bcd8-32363c631f0c",
+            "content": {
+                "title": "Title Message fb9240b9-24e8-4be9-bcd8-32363c631f0c",
+                "body": "Body Message fb9240b9-24e8-4be9-bcd8-32363c631f0c"
+            }
+        }
 }'
 ```
 
@@ -119,10 +119,13 @@ The consumer won't be able to deserialize the message, since its content doesn't
 Curl example:
 ```console
     curl --request POST \
-    --url http://localhost:9102/api/v1/kafka/poison \
-    --header 'Content-Type: text/plain' \
-    --data 'my test string'
+      --url http://localhost:9102/api/v1/kafka/poison \
+      --header 'Content-Type: text/plain' \
+      --data 'my test string'
 ```
+
+## Consideration
+Project tests needs to improve coverage. 
 
 ## Reference
 https://www.confluent.io/blog/spring-kafka-can-your-kafka-consumers-handle-a-poison-pill/
