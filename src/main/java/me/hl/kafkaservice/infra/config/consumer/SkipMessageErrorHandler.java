@@ -34,9 +34,9 @@ public class SkipMessageErrorHandler implements CommonErrorHandler {
         var offset = record.offset();
         var partition = record.partition();
         TopicPartition topicPartition = new TopicPartition(topic, partition);
-        log.error("Handling when processing a kafka event with exception " + thrownException.getMessage());
+        log.error("Handling when processing a kafka event with exception {}", thrownException.getMessage());
         consumer.seek(topicPartition, offset + 1);
-        log.warn("Skipped " + topic + "-" + partition + " offset " + offset);
+        log.warn("Skipped event from topic: '{}', partition: '{}', and offset: '{}'", topic, partition, offset);
     }
 
 }
