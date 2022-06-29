@@ -1,8 +1,5 @@
 package me.hl.kafkaservice.infra.config.producer;
 
-import io.confluent.kafka.serializers.KafkaAvroSerializer;
-import me.hl.message.MessageCreatedEvent;
-import org.apache.kafka.common.serialization.ByteArraySerializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

@@ -1,6 +1,5 @@
 package me.hl.kafkaservice.infra.config.producer;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -11,7 +10,6 @@ import java.util.Map;
 
 import static org.apache.kafka.clients.producer.ProducerConfig.BOOTSTRAP_SERVERS_CONFIG;
 
-@Slf4j
 abstract public class AbstractProducerConfig<T, K> {
 
     @Value("${spring.kafka.bootstrap-servers}")

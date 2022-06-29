@@ -1,6 +1,5 @@
 package me.hl.kafkaservice.infra.producer;
 
-import lombok.extern.slf4j.Slf4j;
 import me.hl.kafkaservice.rest.MessageRequest;
 import me.hl.message.MessageContent;
 import me.hl.message.MessageCreatedEvent;
@@ -14,7 +13,6 @@ import java.time.LocalDateTime;
 import static me.hl.kafkaservice.infra.config.producer.MessageProducerConfig.PRODUCER_MESSAGE_TEMPLATE_BEAN_NAME;
 
 @Service
-@Slf4j
 public class MessageProducer extends AbstractProducer<String, MessageCreatedEvent>{
 
     @Value("${spring.kafka.template.default-topic}")
