@@ -53,7 +53,7 @@ OBS: You can also use your IDE to run Gradle tasks.
 
 ## Using Docker Compose
 
-To prepare all services necessaries run the command:
+To prepare all services necessaries, access the `docker` folder in project root and run the command:
 
 ```console
     docker-compose up -d
