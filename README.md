@@ -87,7 +87,7 @@ With your kafka already prepared you just use the command below to run the proje
 
 OBS: You can also use your IDE to run the Project.
 
-## Rest Clients
+## Endpoints
 
 ### Producing MessageCreatedEvents
 
