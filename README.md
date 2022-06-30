@@ -69,7 +69,7 @@ Useful Commands:
 * Logs in Real Time: `docker-compose logs -f {{service_name}}`
 * Access a docker service bash to run commands: `docker exec -it {{service_name}} /bin/bash`
 
-### Kafka Control Service
+### Kafka Control Center
 
 After running docker compose, you can access Kafka Control Center with the URL: http://localhost:9021 to see Kafka information.
 
