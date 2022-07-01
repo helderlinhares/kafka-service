@@ -91,7 +91,7 @@ OBS: You can also use your IDE to run the Project.
 
 ### Producing MessageCreatedEvents
 
-This Rest client will use kafka to produce a message on topic: `me.hl.message`
+This application will use kafka to produce a message on topic: `me.hl.message`
 
 Curl example:
 ```console
@@ -112,7 +112,7 @@ Curl example:
 
 ### Producing a "Poison Pill" Message
 
-This Rest client will produce a message on topic that doesn't follow the Avro schema: `me.hl.message`
+This application will produce a message on topic that doesn't follow the Avro schema: `me.hl.message`
 
 The consumer won't be able to deserialize the message, since its content doesn't follow the Avro existing schema and will produce a message to topic: `me.hl.message.DLT`.
 
